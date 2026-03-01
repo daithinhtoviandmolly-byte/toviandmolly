@@ -1,5 +1,10 @@
 # 🐾 Tovi And Molly — Hướng dẫn thêm & quản lý dữ liệu
+## Link trang web để xem:
+https://toviandmolly.com
 
+(gốc: https://daithinhtoviandmolly-byte.github.io/toviandmolly/ )
+## File Tovi Molly Catalog:
+https://docs.google.com/spreadsheets/d/1F-Fcu0Aoj8tvyedmF7yDohLSqJbRNCeftpQhr3_Lifo/edit?gid=1895329997#gid=1895329997
 ---
 
 ## Tổng quan các tab trong Google Sheet
@@ -229,7 +234,7 @@ Mỗi dòng là một slide banner.
 
 ## Phần 5 — Xem đơn hàng (Sheet Orders)
 
-Đơn hàng được lưu tự động vào **Tovi Molly Orders**, mỗi tháng một tab riêng:
+Đơn hàng được lưu tự động vào **Tovi Molly Orders**: https://docs.google.com/spreadsheets/d/1QbMLOANknwQGfEhBnXkTVFxTJMbHEyuCLVphHZewjwY/edit?gid=0#gid=0, mỗi tháng một tab riêng:
 
 ```
 Tovi Molly Orders
