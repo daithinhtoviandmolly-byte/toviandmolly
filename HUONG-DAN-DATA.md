@@ -1,4 +1,7 @@
 # 🐾 Tovi And Molly — Hướng dẫn thêm & quản lý dữ liệu
+
+node: account vào googlesheet và cloudinary.com thì đều dùng tài khoản daithinhtoviandmolly@gmail.com
+
 ## Link trang web để xem:
 https://toviandmolly.com
 
