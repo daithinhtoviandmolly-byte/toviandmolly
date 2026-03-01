@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tovi And Molly Việt Nam</title>
   <meta name="description" content="Tovi And Molly Việt Nam - Sản phẩm chất lượng cao cho bé yêu">
+  <link rel="icon" href="https://res.cloudinary.com/dbhln6slt/image/upload/v1772333620/icon2_js9hkv.png"
+    type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -127,7 +129,7 @@
     .logo-mark img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .logo-name {
@@ -1583,11 +1585,8 @@
       margin-bottom: 40px;
     }
 
-    .fbn .fln {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 10px;
+    .fbn .fln img {
+      height: 148px;
     }
 
     .fbn p {
@@ -1868,7 +1867,8 @@
   <header>
     <div class="hrow">
       <div class="logo" onclick="showHome()">
-        <div class="logo-mark">🐾</div>
+        <div class="logo-mark"><img src="https://res.cloudinary.com/dbhln6slt/image/upload/v1772333620/icon2_js9hkv.png"
+            alt="Logo"></div>
         <div>
           <div class="logo-name">Tovi And Molly</div>
           <div class="logo-sub">Việt Nam</div>
@@ -1973,7 +1973,9 @@
     <footer>
       <div class="fgrid">
         <div class="fbn">
-          <div class="fln">Tovi And Molly</div>
+          <div class="fln" onclick="showHome()" style="cursor: pointer;"><img
+              src="https://res.cloudinary.com/dbhln6slt/image/upload/v1772332963/logo2_kzueal.png" alt="Tovi And Molly">
+          </div>
           <p>Sản phẩm chất lượng cao dành cho bé yêu. An toàn, đáng tin cậy.</p>
           <div class="fso"><a class="fsb" href="#">f</a><a class="fsb" href="#">ig</a><a class="fsb" href="#">Z</a><a
               class="fsb" href="#">tt</a></div>
@@ -2155,7 +2157,7 @@
     async function loadTab(tab) {
       const k = 's_' + tab; const c = gc(k); if (c) return c;
       try {
-        const url = `https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${tab}`;
+        const url = `https://docs.google.com/spreadsheets/d/${CFG.SHEET_ID}/gviz/tq?tqx=out:json&sheet=${tab}&headers=1`;
         const r = await Promise.race([fetch(url), new Promise((_, rj) => setTimeout(() => rj(), 5000))]);
         const tx = await r.text();
         const js = JSON.parse(tx.substring(47, tx.length - 2));
