@@ -3,7 +3,7 @@
 node: account vào googlesheet và cloudinary.com thì đều dùng tài khoản daithinhtoviandmolly@gmail.com
 
 ## Link trang web để xem:
-https://toviandmolly.com
+https://toviandmolly.vn
 
 (gốc: https://daithinhtoviandmolly-byte.github.io/toviandmolly/ )
 ## File Tovi Molly Catalog:
