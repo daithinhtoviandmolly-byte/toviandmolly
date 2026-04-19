@@ -54,6 +54,7 @@ Tovi Molly Catalog
 - Dán URL ảnh Cloudinary vào các ô **URL Ảnh 1 → 5**
 - Ảnh 1 là ảnh chính hiển thị ngoài danh sách
 - Tối đa 5 ảnh, để trống nếu không có
+- cách upload và lấy URL của ảnh thì xem mục upload ảnh bên dưới (2.2 Upload ảnh)
 
 **Cột phải — Biến thể (Variants):**
 
@@ -123,7 +124,7 @@ Ví dụ:
 
 ## Phần 2 — Upload ảnh lên Cloudinary
 
-### 2.1 Đăng ký Cloudinary (miễn phí)
+### 2.1 Đăng ký Cloudinary (miễn phí) -> cái này đã đăng ký bằng tài khoản google daithinhtoviandmolly@gmail.com
 
 1. Vào [cloudinary.com](https://cloudinary.com) → **Sign up for free**
 2. Đăng ký bằng email hoặc Google
@@ -131,9 +132,11 @@ Ví dụ:
 
 ### 2.2 Upload ảnh
 
-1. Vào **Media Library** (menu trái)
-2. Click **Upload** → chọn ảnh từ máy tính
-3. Có thể upload nhiều ảnh cùng lúc
+Vào trang upload ảnh của Cloudinary: 
+(https://console.cloudinary.com/app/c-79affc9ce297e90073bf4be20a2f56/assets/media_library/folders/ce539499b0091f2645bd924a39d91f1ca7?view_mode=mosaic)
+1. Vào **Media Library** (menu trái) -> chọn **Folders** -> tạo cấu trúc folder cho dễ quản lý, có thể mỗi sản phẩm 1 folder như hiện tại đang có -> kéo thả ảnh lên folder sản phẩm tương ứng.
+2. Hoặc Click **Upload** → chọn ảnh từ máy tính
+(Có thể upload nhiều ảnh cùng lúc)
 
 **Mẹo đặt tên file trước khi upload:**
 ```
@@ -145,24 +148,12 @@ sp001-3.jpg
 ### 2.3 Lấy URL ảnh
 
 1. Click vào ảnh trong Media Library
-2. Nhìn sang bảng bên phải → tìm mục **URL** hoặc **Copy URL**
+2. Nhìn sang bảng bên phải → tìm mục **URL** hoặc **Copy URL** (đưa chuột vào từng ảnh, có biểu tượng <> copy URL ở góc trên bên phải)
 3. URL dạng:
 ```
 https://res.cloudinary.com/your-cloud/image/upload/v1234567890/sp001-1.jpg
 ```
 
-### 2.4 Tối ưu ảnh tự động
-
-Thêm tham số vào giữa URL để ảnh load nhanh hơn:
-
-```
-Trước: .../upload/v1234.../sp001-1.jpg
-Sau:   .../upload/w_800,q_auto,f_auto/v1234.../sp001-1.jpg
-```
-
-- `w_800` → tự resize về width 800px
-- `q_auto` → tự chọn chất lượng tối ưu
-- `f_auto` → tự chọn format (WebP nếu browser hỗ trợ)
 
 ---
 
