@@ -202,13 +202,110 @@ function generateId() {
 function setupSheets() {
   // Tạo tất cả tab cần thiết nếu chưa có
   getOrCreateSheet(TAB_PRODUCTS, PRODUCT_HEADERS);
-  getOrCreateSheet(TAB_CATS, ['id','name','icon','count']);
-  getOrCreateSheet(TAB_CAMPAIGNS, ['id','type','tag','title','description','btn_text','bg_color','active','sort_order']);
+  getOrCreateSheet(TAB_CATS, ['id','name','icon','image_url','count']);
+  const campaignSheet = getOrCreateSheet(TAB_CAMPAIGNS, ['id','type','tag','title','description','btn_text','bg_color','image_url','image_position','overlay','active','sort_order']);
+  setupCampaignDropdowns(campaignSheet);
 
   // Tab _entry — tạo layout form
   setupEntrySheet();
 
-  SpreadsheetApp.getUi().alert('✅ Đã tạo xong cấu trúc sheet!');
+  return logSetupResult('✅ Đã tạo xong cấu trúc sheet!');
+}
+
+// Ghi kết quả vào Execution log để các hàm setup chạy được cả khi project
+// được mở trực tiếp từ script.google.com và không có Google Sheet UI.
+function logSetupResult(message) {
+  console.log(message);
+  return { ok: true, message };
+}
+
+// Thêm các cột ảnh banner còn thiếu mà không xóa hoặc thay đổi dữ liệu hiện có.
+// Chạy riêng hàm này một lần nếu Sheet đã được khởi tạo trước đây.
+function setupCampaignImageColumns() {
+  const headers = ['image_url', 'image_position', 'overlay'];
+  const sheet = getOrCreateSheet(TAB_CAMPAIGNS, [
+    'id','type','tag','title','description','btn_text','bg_color',
+    'image_url','image_position','overlay','active','sort_order'
+  ]);
+  const lastColumn = Math.max(sheet.getLastColumn(), 1);
+  const current = sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(String);
+  const missing = headers.filter(header => !current.includes(header));
+
+  if (missing.length) {
+    sheet.getRange(1, lastColumn + 1, 1, missing.length).setValues([missing]);
+    sheet.getRange(1, lastColumn + 1, 1, missing.length)
+      .setFontWeight('bold')
+      .setBackground('#111111')
+      .setFontColor('#ffffff');
+  }
+
+  setupCampaignDropdowns(sheet);
+
+  return logSetupResult(
+    missing.length
+      ? '✅ Đã thêm cột: ' + missing.join(', ') + ' và cấu hình dropdown.'
+      : '✅ Các cột ảnh banner và dropdown đã sẵn sàng.'
+  );
+}
+
+// Tạo dropdown cho các cấu hình banner để người quản lý không phải nhập tay.
+function setupCampaignDropdowns(sheet) {
+  const lastColumn = Math.max(sheet.getLastColumn(), 1);
+  const headers = sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(String);
+  const positionColumn = headers.indexOf('image_position') + 1;
+  const overlayColumn = headers.indexOf('overlay') + 1;
+  const rowCount = Math.max(sheet.getMaxRows() - 1, 1);
+
+  if (positionColumn > 0) {
+    const positionRule = SpreadsheetApp.newDataValidation()
+      .requireValueInList([
+        'center',
+        'left center',
+        'right center',
+        'center top',
+        'center bottom',
+        'left top',
+        'left bottom',
+        'right top',
+        'right bottom'
+      ], true)
+      .setAllowInvalid(false)
+      .setHelpText('Chọn vị trí ưu tiên của ảnh khi banner tự cắt theo khung.')
+      .build();
+    sheet.getRange(2, positionColumn, rowCount, 1).setDataValidation(positionRule);
+    sheet.getRange(1, positionColumn).setNote('Vị trí ảnh khi hiển thị. Khuyến nghị: right center.');
+  }
+
+  if (overlayColumn > 0) {
+    const overlayRule = SpreadsheetApp.newDataValidation()
+      .requireValueInList([
+        '0', '0.1', '0.15', '0.2', '0.22', '0.25',
+        '0.3', '0.35', '0.4', '0.5', '0.6', '0.7'
+      ], true)
+      .setAllowInvalid(false)
+      .setHelpText('Chọn độ tối phủ lên ảnh. Số càng lớn thì ảnh càng tối và chữ càng dễ đọc.')
+      .build();
+    sheet.getRange(2, overlayColumn, rowCount, 1).setDataValidation(overlayRule);
+    sheet.getRange(1, overlayColumn).setNote('Độ tối từ 0 đến 0.7. Khuyến nghị mặc định: 0.22.');
+  }
+}
+
+// Thêm cột ảnh danh mục còn thiếu mà không xóa hoặc thay đổi dữ liệu hiện có.
+// Chạy riêng hàm này một lần nếu Sheet đã được khởi tạo trước đây.
+function setupCategoryImageColumn() {
+  const sheet = getOrCreateSheet(TAB_CATS, ['id','name','icon','image_url','count']);
+  const lastColumn = Math.max(sheet.getLastColumn(), 1);
+  const current = sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(String);
+
+  if (!current.includes('image_url')) {
+    sheet.getRange(1, lastColumn + 1).setValue('image_url')
+      .setFontWeight('bold')
+      .setBackground('#111111')
+      .setFontColor('#ffffff');
+    return logSetupResult('✅ Đã thêm cột image_url vào tab categories.');
+  } else {
+    return logSetupResult('✅ Cột image_url đã tồn tại trong tab categories.');
+  }
 }
 
 function getOrCreateSheet(name, headers) {
@@ -610,4 +707,4 @@ function onOpen() {
 
 // ─── CONFIG ─────────────────────────────────────────────────
 // Thay bằng ID của Google Sheet "Tovi Molly Orders"
-const ORDER_SHEET_ID = 'YOUR_ORDER_SHEET_ID_HERE';
+const ORDER_SHEET_ID = '1QbMLOANknwQGfEhBnXkTVFxTJMbHEyuCLVphHZewjwY';

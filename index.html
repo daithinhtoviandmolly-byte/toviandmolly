@@ -302,6 +302,41 @@
       display: flex;
       align-items: center;
       padding: 0 80px;
+      position: relative;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .bslide>div {
+      position: relative;
+      z-index: 1;
+    }
+
+    .bslide.has-image {
+      color: var(--white);
+    }
+
+    .bslide.has-image .btag,
+    .bslide.has-image .bdesc {
+      color: rgba(255, 255, 255, .86);
+      text-shadow: 0 1px 12px rgba(0, 0, 0, .22);
+    }
+
+    .bslide.has-image .btitle {
+      text-shadow: 0 2px 20px rgba(0, 0, 0, .3);
+    }
+
+    .bslide.has-image .bbtn {
+      color: var(--white);
+      border-color: rgba(255, 255, 255, .9);
+      background: rgba(0, 0, 0, .08);
+      backdrop-filter: blur(2px);
+    }
+
+    .bslide.has-image .bbtn:hover {
+      color: var(--black);
+      background: var(--white);
     }
 
     .btag {
@@ -517,6 +552,20 @@
 
     .cico {
       font-size: 28px;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .cico img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: var(--r);
     }
 
     .cname {
@@ -1810,6 +1859,11 @@
         gap: 8px;
       }
 
+      .cico {
+        width: 56px;
+        height: 56px;
+      }
+
       .pgrid {
         grid-template-columns: repeat(2, 1fr);
       }
@@ -2193,12 +2247,13 @@
       const pend = window.location.hash.startsWith('#product-') ? window.location.hash.replace('#product-', '') : null;
       const [pr, cr, camp] = await Promise.all([loadTab('products'), loadTab('categories'), loadTab('campaigns')]);
       S.prods = pr ? pr.filter(r => r.id).map(pp) : DP;
-      S.cats = cr ? cr.filter(r => r.id).map(r => ({ id: r.id, name: r.name, icon: r.icon || '📦' })) : DC;
+      S.cats = cr ? cr.filter(r => r.id).map(r => ({ id: r.id, name: r.name, icon: r.icon || '📦', image: r.image_url || '' })) : DC;
       const all = camp || [];
       S.banners = all.filter(c => c.type === 'banner' && (c.active === true || c.active === 'true' || c.active === 1)).sort((a, b) => (+a.sort_order || 0) - (+b.sort_order || 0));
       S.campaigns = all.filter(c => c.type === 'promo_bar' && (c.active === true || c.active === 'true' || c.active === 1));
       if (!S.banners.length) S.banners = DB;
       S.cats.forEach(c => { c.count = S.prods.filter(p => p.cat === c.id).length; });
+      S.cats = S.cats.filter(c => c.count > 0);
       renderCats(); buildNav(); applyPromo(); initBanner(); applyAll(); initSearch();
       if (pend) { const p = S.prods.find(x => x.id === pend); if (p) setTimeout(() => openDet(p), 100); }
     }
@@ -2213,7 +2268,19 @@
     let bi = 0, bt;
     function initBanner() {
       const tr = document.getElementById('btrack'), nav = document.getElementById('bnav');
-      tr.innerHTML = S.banners.map(b => `<div class="bslide" style="background:${b.bg_color || b.background || '#f4f4f4'}"><div><div class="btag">${b.tag || ''}</div><div class="btitle">${(b.title || '').replace(/\\n/g, '<br>').replace(/\n/g, '<br>')}</div><div class="bdesc">${b.description || b.desc || ''}</div><a href="#products" class="bbtn">${b.btn_text || 'Xem ngay →'}</a></div><div class="bdeco">${b.deco || ''}</div></div>`).join('');
+      tr.innerHTML = S.banners.map(b => {
+        const rawImage = String(b.image_url || '').trim();
+        const image = /^https:\/\//i.test(rawImage) ? encodeURI(rawImage).replace(/["'()\\]/g, c => encodeURIComponent(c)) : '';
+        const color = /^#[0-9a-f]{3,8}$/i.test(String(b.bg_color || b.background || '')) ? (b.bg_color || b.background) : '#f4f4f4';
+        const allowedPositions = ['center', 'left center', 'right center', 'center top', 'center bottom', 'left top', 'left bottom', 'right top', 'right bottom'];
+        const position = allowedPositions.includes(String(b.image_position || '').trim().toLowerCase()) ? String(b.image_position).trim().toLowerCase() : 'center';
+        const parsedOverlay = Number.parseFloat(b.overlay);
+        const overlay = Number.isFinite(parsedOverlay) ? Math.min(.7, Math.max(0, parsedOverlay)) : .22;
+        const style = image
+          ? `background-color:${color};background-image:linear-gradient(rgba(0,0,0,${overlay}),rgba(0,0,0,${overlay})),url(${image});background-position:${position}`
+          : `background-color:${color}`;
+        return `<div class="bslide${image ? ' has-image' : ''}" style="${style}"><div><div class="btag">${b.tag || ''}</div><div class="btitle">${(b.title || '').replace(/\\n/g, '<br>').replace(/\n/g, '<br>')}</div><div class="bdesc">${b.description || b.desc || ''}</div><a href="#products" class="bbtn">${b.btn_text || 'Xem ngay →'}</a></div><div class="bdeco">${b.deco || ''}</div></div>`;
+      }).join('');
       nav.innerHTML = S.banners.map((_, i) => `<div class="bdot${i === 0 ? ' on' : ''}" onclick="goBan(${i})"></div>`).join('');
       clearInterval(bt); bt = setInterval(() => { bi = (bi + 1) % S.banners.length; upB(); }, 4500);
     }
@@ -2223,7 +2290,28 @@
 
     function applyPromo() { const a = S.campaigns[0]; if (a) { document.getElementById('ptxt').textContent = a.text || a.title || ''; document.getElementById('pbar').classList.add('show'); } }
 
-    function renderCats() { document.getElementById('cgrid').innerHTML = S.cats.map(c => `<div class="ccard${S.cat === c.id ? ' on' : ''}" onclick="setCat('${c.id}')"><div class="cico">${c.icon}</div><div class="cname">${c.name}</div><div class="ccnt">${c.count || 0}</div></div>`).join(''); }
+    function cloudinaryImage(url, size) {
+      const raw = String(url || '').trim();
+      if (!/^https:\/\//i.test(raw)) return '';
+      const safe = encodeURI(raw).replace(/["'()\\]/g, c => encodeURIComponent(c));
+      if (!safe.includes('/image/upload/')) return safe;
+      return safe.replace('/image/upload/', `/image/upload/c_fit,w_${size},h_${size},q_auto,f_auto/`);
+    }
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+    }
+    function renderCats() {
+      document.getElementById('cgrid').innerHTML = S.cats.map(c => {
+        const src = cloudinaryImage(c.image, 160);
+        const src2x = cloudinaryImage(c.image, 320);
+        const name = escapeHtml(c.name);
+        const icon = escapeHtml(c.icon);
+        const media = src
+          ? `<img src="${src}" srcset="${src} 1x, ${src2x} 2x" width="64" height="64" loading="lazy" alt="${name}" data-fallback="${icon}" onerror="this.parentElement.textContent=this.dataset.fallback">`
+          : icon;
+        return `<div class="ccard${S.cat === c.id ? ' on' : ''}" onclick="setCat('${c.id}')"><div class="cico">${media}</div><div class="cname">${name}</div><div class="ccnt">${c.count || 0}</div></div>`;
+      }).join('');
+    }
     function buildNav() { const row = document.getElementById('navrow'); row.querySelectorAll('[data-cat]:not([data-cat="all"])').forEach(e => e.remove()); S.cats.forEach(c => { const d = document.createElement('div'); d.className = 'nlink'; d.dataset.cat = c.id; d.textContent = c.name; d.onclick = () => setCat(c.id); row.appendChild(d); }); }
     function setCat(id) { S.cat = id; S.page = 1; document.querySelectorAll('.ccard').forEach((c, i) => c.classList.toggle('on', S.cats[i]?.id === id)); document.querySelectorAll('.nlink').forEach(n => n.classList.toggle('on', n.dataset.cat === id)); applyAll(); document.getElementById('products').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 

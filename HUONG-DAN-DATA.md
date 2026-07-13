@@ -1,6 +1,6 @@
 # 🐾 Tovi And Molly — Hướng dẫn thêm & quản lý dữ liệu
 
-node: account vào googlesheet và cloudinary.com thì đều dùng tài khoản daithinhtoviandmolly@gmail.com
+> **Tài khoản quản lý:** Google Sheet và Cloudinary đều sử dụng tài khoản `daithinhtoviandmolly@gmail.com`.
 
 ## Link trang web để xem:
 https://toviandmolly.vn
@@ -154,6 +154,8 @@ sp001-3.jpg
 https://res.cloudinary.com/your-cloud/image/upload/v1234567890/sp001-1.jpg
 ```
 
+Chỉ cần copy URL ảnh gốc từ Cloudinary và dán vào đúng ô ảnh trong Google Sheet.
+
 
 ---
 
@@ -163,21 +165,28 @@ Tab `categories` có thể sửa trực tiếp (đơn giản, ít thay đổi).
 
 **Cấu trúc:**
 
-| id | name | icon | count |
-|---|---|---|---|
-| binh | Bình sữa | 🍼 | (tự động) |
-| do-choi | Đồ chơi | 🧸 | |
-| quan-ao | Quần áo | 👕 | |
+| id | name | icon | image_url | count |
+|---|---|---|---|---|
+| binh | Bình sữa | 🍼 | URL ảnh Cloudinary | (tự động) |
+| do-choi | Đồ chơi | 🧸 | URL ảnh Cloudinary | |
+| quan-ao | Quần áo | 👕 | URL ảnh Cloudinary | |
 
 - **id**: chữ thường, không dấu, không space (dùng dấu `-`) — phải khớp với cột `category` trong tab products
 - **name**: tên hiển thị trên website
-- **icon**: emoji bất kỳ
+- **icon**: emoji dự phòng khi chưa có ảnh hoặc ảnh tải lỗi
+- **image_url**: URL ảnh gốc trên Cloudinary
 - **count**: để trống, website tự đếm
+
+Danh mục chưa có sản phẩm sẽ tự động được ẩn khỏi website. Khi có ít nhất một sản phẩm dùng đúng `id` danh mục, danh mục sẽ tự hiển thị lại.
+
+Ảnh danh mục nên là ảnh vuông 256×256px hoặc 512×512px, ưu tiên PNG/WebP nền trong suốt và dung lượng dưới 100–150KB. Website hiển thị bằng `contain` nên ảnh giữ đúng tỷ lệ, không bị kéo méo hoặc cắt mất nội dung.
+
+Nếu `image_url` trống hoặc ảnh tải lỗi, emoji trong `icon` sẽ tự hiển thị thay thế.
 
 **Thêm danh mục mới:**
 1. Vào tab `categories`
 2. Thêm dòng mới phía dưới
-3. Điền đủ 3 cột: `id`, `name`, `icon`
+3. Điền `id`, `name`, `icon` và dán URL Cloudinary vào `image_url`
 4. Khi thêm sản phẩm, điền đúng `id` này vào cột "Danh mục" trong form
 
 ---
@@ -201,10 +210,10 @@ Dòng chạy phía trên banner, dùng để hiển thị khuyến mãi ngắn.
 
 Mỗi dòng là một slide banner.
 
-| id | type | tag | title | description | btn_text | bg_color | active | sort_order |
-|---|---|---|---|---|---|---|---|---|
-| 2 | banner | Bộ sưu tập mới | Yêu thương bé | Đồ dùng chất lượng cao... | Khám phá → | #f7f4f0 | true | 1 |
-| 3 | banner | Khuyến mãi | Giảm đến 50% | Ưu đãi đặc biệt... | Mua ngay → | #f0f4f7 | true | 2 |
+| id | type | tag | title | description | btn_text | bg_color | image_url | image_position | overlay | active | sort_order |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2 | banner | Bộ sưu tập mới | Yêu thương bé | Đồ dùng chất lượng cao... | Khám phá → | #f7f4f0 | URL Cloudinary | right center | 0.22 | true | 1 |
+| 3 | banner | Khuyến mãi | Giảm đến 50% | Ưu đãi đặc biệt... | Mua ngay → | #f0f4f7 | | center | 0.22 | true | 2 |
 
 - **type**: phải là `banner`
 - **tag**: dòng chữ nhỏ phía trên tiêu đề (vd: "Bộ sưu tập mới")
@@ -212,8 +221,42 @@ Mỗi dòng là một slide banner.
 - **description**: mô tả ngắn phía dưới tiêu đề
 - **btn_text**: chữ trên nút (vd: `Khám phá →`)
 - **bg_color**: màu nền dạng hex (vd: `#f7f4f0`) — nên dùng màu nhạt
+- **image_url**: URL ảnh banner trên Cloudinary; để trống nếu chỉ muốn dùng màu nền
+- **image_position**: chọn vị trí ưu tiên của ảnh từ dropdown; thường dùng `right center`
+- **overlay**: chọn độ tối phủ lên ảnh từ dropdown; khuyến nghị `0.22`, tăng lên nếu chữ khó đọc
 - **active**: `true` để hiện, `false` để ẩn
 - **sort_order**: số thứ tự slide (1, 2, 3...)
+
+Hai cột `image_position` và `overlay` đã có sẵn danh sách lựa chọn; chỉ cần chọn giá trị phù hợp từ dropdown.
+
+**Các lựa chọn `image_position`:**
+
+| Giá trị | Khi nào dùng |
+|---|---|
+| `center` | Chủ thể nằm giữa ảnh |
+| `left center` | Chủ thể nằm bên trái |
+| `right center` | Chủ thể nằm bên phải; phù hợp nhất khi chữ ở bên trái |
+| `center top` / `center bottom` | Cần ưu tiên phần trên hoặc dưới của ảnh |
+| `left top` / `left bottom` | Chủ thể ở góc trái |
+| `right top` / `right bottom` | Chủ thể ở góc phải |
+
+**Các lựa chọn `overlay`:** `0`, `0.1`, `0.15`, `0.2`, `0.22`, `0.25`, `0.3`, `0.35`, `0.4`, `0.5`, `0.6`, `0.7`.
+
+- `0`: không phủ tối.
+- `0.1–0.2`: dùng cho ảnh vốn đã tối.
+- `0.22`: mức mặc định khuyến nghị.
+- `0.3–0.4`: dùng khi ảnh sáng hoặc chữ khó đọc.
+- `0.5–0.7`: phủ tối mạnh, chỉ dùng khi thật sự cần.
+
+### 4.3 Chuẩn bị ảnh banner
+
+- Kích thước khuyến nghị: **1920×700px**; có thể dùng 1440×560px để nhẹ hơn.
+- Tỷ lệ ảnh phù hợp khoảng **2.4:1 đến 3:1**.
+- Ưu tiên WebP/JPEG, dung lượng khoảng 300–600KB và không nên vượt quá 1MB.
+- Nên đặt chủ thể ở bên phải và chừa khoảng 35–40% bên trái cho tiêu đề, mô tả và nút.
+- Không đặt nội dung quan trọng sát mép vì ảnh sẽ được hiển thị bằng `cover` và có thể bị cắt khác nhau trên desktop/mobile.
+- Ảnh luôn giữ đúng tỷ lệ, không bị kéo méo. `image_position` quyết định vùng ảnh được ưu tiên khi phần dư bị cắt.
+- Nếu `image_url` để trống, banner tiếp tục sử dụng `bg_color` như trước.
 
 **Gợi ý màu nền banner nhẹ:**
 ```
@@ -253,10 +296,15 @@ Tovi Molly Orders
 | Lỗi | Nguyên nhân | Cách xử lý |
 |---|---|---|
 | Website vẫn hiện demo data | Sheet chưa public | Share sheet → Anyone with link → Viewer |
-| Sản phẩm không hiện | Sheet ID sai | Kiểm tra lại CFG.SHEET_ID trong index.html |
-| Đơn hàng không lưu vào Sheet | Apps Script chưa deploy hoặc URL sai | Kiểm tra CFG.SCRIPT, re-deploy nếu cần |
+| Sản phẩm không hiện | Dữ liệu hoặc kết nối website có vấn đề | Kiểm tra lại dữ liệu; nếu vẫn lỗi, liên hệ người quản trị website |
+| Đơn hàng không lưu vào Sheet | Kết nối lưu đơn có vấn đề | Thử lại; nếu vẫn lỗi, liên hệ người quản trị website |
 | Menu 🐾 không xuất hiện | Cần reload Sheet | F5 hoặc đóng/mở lại Google Sheet |
 | Ảnh không hiện | URL Cloudinary sai | Kiểm tra URL có thể mở trực tiếp trên trình duyệt không |
+| Ảnh banner không hiện | Sai tên cột hoặc URL chưa nằm trong `image_url` | Kiểm tra đúng header `image_url`, sau đó hard refresh website |
+| Banner bị cắt mất chủ thể | `image_position` chưa phù hợp | Chọn lại `right center`, `left center`, `center top`... từ dropdown |
+| Chữ trên banner khó đọc | `overlay` quá thấp | Tăng `overlay` lên `0.3` hoặc `0.4` |
+| Category vẫn hiện emoji | `image_url` trống hoặc ảnh lỗi | Kiểm tra URL Cloudinary; emoji là nội dung dự phòng bình thường |
+| Category không hiển thị | Danh mục chưa có sản phẩm | Thêm sản phẩm có `category` khớp đúng với `id` danh mục |
 | Sản phẩm không có variants | Định dạng sai | Kiểm tra: dòng lẻ = tên loại, dòng chẵn = giá trị, cách nhau bởi dấu phẩy |
 
 ---
@@ -269,5 +317,7 @@ Sửa sản phẩm:   _entry → menu 🐾 → 🔍 Tìm → chọn → sửa �
 Xóa sản phẩm:   _entry → menu 🐾 → 🔍 Tìm → chọn → 🗑️ Xóa
 Ẩn sản phẩm:    Còn hàng? = false → 💾 Lưu
 Thêm banner:     tab campaigns → thêm dòng mới, type = banner
+Ảnh banner:      dán image_url → chọn image_position → chọn overlay
+Thêm danh mục:   tab categories → thêm id, name, icon, image_url
 Xem đơn hàng:   Sheet "Tovi Molly Orders" → chọn tab tháng
 ```
