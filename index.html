@@ -2247,6 +2247,91 @@
       } catch { return null; }
     }
 
+    // ── TYPOGRAPHY SETTINGS ──────────────────────────────────
+    // HTML/CSS hiện tại luôn là fallback. Chỉ giá trị hợp lệ, không trống từ
+    // typography_settings mới được thêm vào lớp CSS ghi đè này.
+    const TYPOGRAPHY_TARGETS = {
+      topbar: '.topbar',
+      brand_name: '.logo-name',
+      brand_subtitle: '.logo-sub',
+      search_input: '.sbar input',
+      main_menu: '.nlink',
+      banner_tag: '.btag',
+      banner_title: '.btitle',
+      banner_description: '.bdesc',
+      banner_button: '.bbtn',
+      benefit_title: '.ttxt .t1',
+      benefit_description: '.ttxt .t2',
+      section_title: '.stitle',
+      section_link: '.slink',
+      category_name: '.cname',
+      category_count: '.ccnt',
+      filter_button: '.chip',
+      sort_select: '.srt',
+      result_count: '.rcnt',
+      product_brand: '.pbrand',
+      product_name: '.pname',
+      product_price: '.psale, .pnorm',
+      product_old_price: '.porig',
+      product_badge: '.bdg',
+      detail_brand: '.dibrand',
+      detail_title: '.diname',
+      detail_price: '.dipsale, .dipnorm',
+      detail_body: '.dcrumb, .dvarlbl, .dqlbl, .dtabpanel, .dtabbtn',
+      action_button: '.dadd, .dzalo, .bchk, .bord',
+      cart_text: '.cnm, .cvr, .cpr, .lb, .obox, .fl, .fi',
+      footer_description: '.fbn p',
+      footer_heading: '.fcol h4',
+      footer_link: '.fcol li a',
+      footer_bottom: '.fbot',
+      mobile_nav: '.mnit'
+    };
+
+    function applyTypography(rows) {
+      const desktop = [], mobile = [];
+      const has = value => value !== null && value !== undefined && String(value).trim() !== '';
+      const numberInRange = (value, min, max) => {
+        if (!has(value)) return null;
+        const number = Number(value);
+        return Number.isFinite(number) && number >= min && number <= max ? number : null;
+      };
+      const allowedWeight = new Set(['300', '400', '500', '600', '700']);
+      const allowedStyle = new Set(['normal', 'italic']);
+      const allowedTransform = new Set(['none', 'uppercase', 'lowercase', 'capitalize']);
+
+      (rows || []).forEach(row => {
+        const selector = TYPOGRAPHY_TARGETS[String(row.key || '').trim()];
+        if (!selector) return;
+        const rules = [];
+        const desktopSize = numberInRange(row.desktop_px, 8, 96);
+        const mobileSize = numberInRange(row.mobile_px, 8, 96);
+        const weight = String(row.font_weight || '').trim();
+        const style = String(row.font_style || '').trim();
+        const transform = String(row.text_transform || '').trim();
+        const lineHeight = String(row.line_height || '').trim();
+        const spacing = numberInRange(row.letter_spacing_px, -2, 10);
+        const color = String(row.color || '').trim();
+
+        if (desktopSize !== null) rules.push(`font-size:${desktopSize}px!important`);
+        if (allowedWeight.has(weight)) rules.push(`font-weight:${weight}!important`);
+        if (allowedStyle.has(style)) rules.push(`font-style:${style}!important`);
+        if (lineHeight === 'normal' || (numberInRange(lineHeight, 1, 2.5) !== null)) rules.push(`line-height:${lineHeight}!important`);
+        if (spacing !== null) rules.push(`letter-spacing:${spacing}px!important`);
+        if (/^#[0-9a-f]{6}$/i.test(color)) rules.push(`color:${color}!important`);
+        if (allowedTransform.has(transform)) rules.push(`text-transform:${transform}!important`);
+        if (rules.length) desktop.push(`${selector}{${rules.join(';')}}`);
+        if (mobileSize !== null) mobile.push(`${selector}{font-size:${mobileSize}px!important}`);
+      });
+
+      const old = document.getElementById('dynamic-typography');
+      if (old) old.remove();
+      if (!desktop.length && !mobile.length) return;
+      const style = document.createElement('style');
+      style.id = 'dynamic-typography';
+      style.textContent = `${desktop.join('\n')}\n@media(max-width:768px){${mobile.join('\n')}}`;
+      document.head.appendChild(style);
+    }
+
     function pp(r) {
       const imgs = String(r.images || '').split('\n').filter(Boolean);
       return {
@@ -2271,7 +2356,10 @@
     async function init() {
       loadCart();
       const pend = window.location.hash.startsWith('#product-') ? window.location.hash.replace('#product-', '') : null;
-      const [pr, cr, camp] = await Promise.all([loadTab('products'), loadTab('categories'), loadTab('campaigns')]);
+      const [pr, cr, camp, typography] = await Promise.all([
+        loadTab('products'), loadTab('categories'), loadTab('campaigns'), loadTab('typography_settings')
+      ]);
+      applyTypography(typography || []);
       S.prods = pr ? pr.filter(r => r.id).map(pp) : DP;
       S.cats = cr ? cr.filter(r => r.id).map(r => ({ id: r.id, name: r.name, icon: r.icon || '📦', image: r.image_url || '' })) : DC;
       const all = camp || [];

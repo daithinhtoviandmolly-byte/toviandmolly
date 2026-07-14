@@ -17,6 +17,7 @@ Tovi Molly Catalog
 ├── products      ← dữ liệu sản phẩm (website đọc từ đây)
 ├── categories    ← danh mục
 ├── campaigns     ← banner trang chủ + thanh thông báo
+├── typography_settings ← cỡ chữ, độ đậm/nghiêng và màu chữ
 └── _entry        ← form nhập liệu (chỉ để quản lý, website không đọc)
 ```
 
@@ -258,6 +259,64 @@ Hai cột `image_position` và `overlay` đã có sẵn danh sách lựa chọn;
 - Nên đặt chủ thể ở bên phải và chừa khoảng 35–40% bên trái cho tiêu đề, mô tả và nút.
 - Không nên chèn sẵn chữ vào file ảnh vì website đã hiển thị tag, tiêu đề, mô tả và nút từ Google Sheet; chữ trong ảnh sẽ bị chồng lên nội dung website.
 - Không đặt nội dung quan trọng sát mép vì ảnh sẽ được hiển thị bằng `cover` và có thể bị cắt khác nhau trên desktop/mobile.
+
+---
+
+## Phần 5 — Cấu hình chữ trên website (tab `typography_settings`)
+
+Nếu chưa thấy tab này, vào menu **🐾 Tovi & Molly → 🎨 Tạo / cập nhật cấu hình chữ**.
+Có thể chạy lại thao tác này khi website bổ sung vùng chữ mới; các giá trị đã nhập sẽ được giữ nguyên.
+
+Các dòng được sắp theo thứ tự giao diện từ trên xuống dưới. Ba nhóm thường chỉnh nhất nằm ở đầu bảng:
+
+1. `brand_name`, `brand_subtitle`: tên **Tovi And Molly** và dòng **Việt Nam**.
+2. `main_menu`: menu **Tất cả, Bình sữa, Núm ti, Phụ kiện…**.
+3. `banner_tag`, `banner_title`, `banner_description`, `banner_button`: toàn bộ chữ trong banner.
+
+### Cách đọc bảng
+
+- Cột màu xám là thông tin giải thích và giá trị mặc định; không cần sửa.
+- Cột màu vàng nhạt là các setting có thể chỉnh.
+- Để trống một ô setting nghĩa là website tiếp tục dùng CSS mặc định trong HTML.
+- Website chỉ áp dụng giá trị hợp lệ. Giá trị sai hoặc key không được hỗ trợ sẽ bị bỏ qua.
+
+| Cột | Ý nghĩa | Cách nhập |
+|---|---|---|
+| `desktop_px` | Cỡ chữ trên máy tính | Nhập số 8–96, ví dụ `16` |
+| `mobile_px` | Cỡ chữ trên điện thoại | Nhập số 8–96, ví dụ `14` |
+| `font_weight` | Độ đậm | Chọn dropdown: 300, 400, 500, 600, 700 |
+| `font_style` | Chữ thường/nghiêng | Chọn `normal` hoặc `italic` |
+| `line_height` | Khoảng cách dòng | Chọn dropdown; nội dung thường nên dùng 1.4–1.6 |
+| `letter_spacing_px` | Khoảng cách ký tự | Nhập từ -2 đến 10; ví dụ `0.5`, `1`, `2` |
+| `color` | Màu chữ | Mã HEX 6 ký tự, ví dụ `#111111` |
+| `text_transform` | Chữ hoa/thường | Chọn dropdown |
+
+### Chọn mã màu
+
+Mã màu phải có dạng `#` cộng 6 ký tự, ví dụ:
+
+- `#111111`: đen gần tuyệt đối, dùng cho nội dung chính.
+- `#666666`: xám đậm, dùng cho nội dung phụ và đạt độ tương phản tốt trên nền trắng.
+- `#087A37`: xanh đậm, phù hợp cho chữ/nút Zalo.
+- `#FFFFFF`: trắng, chỉ dùng khi nền đủ tối.
+
+Có thể lấy mã HEX từ công cụ chọn màu của Google bằng cách chọn **Màu chữ → Tùy chỉnh**, hoặc dùng công cụ chọn màu bất kỳ rồi sao chép giá trị HEX. Không nhập tên màu như `red` hay `green`.
+
+### Ví dụ
+
+Muốn menu danh mục đậm và lớn hơn trên mobile, tìm dòng `main_menu` rồi đặt:
+
+| mobile_px | font_weight |
+|---:|---:|
+| 15 | 600 |
+
+Muốn tiêu đề banner 32px trên điện thoại, chữ đậm và màu trắng, tìm dòng `banner_title` rồi đặt:
+
+| mobile_px | font_weight | color |
+|---:|---:|---|
+| 32 | 600 | `#FFFFFF` |
+
+Thay đổi có thể cần tối đa khoảng 5 phút để cache trên website hết hạn. Tải lại trang sau thời gian này để kiểm tra.
 - Ảnh luôn giữ đúng tỷ lệ, không bị kéo méo. `image_position` quyết định vùng ảnh được ưu tiên khi phần dư bị cắt.
 - Nếu `mobile_image_url` để trống, điện thoại tự sử dụng ảnh desktop trong `image_url`.
 - Nếu cả hai URL ảnh đều trống, banner tiếp tục sử dụng `bg_color` như trước.

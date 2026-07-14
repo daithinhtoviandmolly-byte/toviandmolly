@@ -8,7 +8,48 @@ const SHEET_CATALOG = SpreadsheetApp.getActiveSpreadsheet();
 const TAB_PRODUCTS   = 'products';
 const TAB_CATS       = 'categories';
 const TAB_CAMPAIGNS  = 'campaigns';
+const TAB_TYPOGRAPHY = 'typography_settings';
 const TAB_ENTRY      = '_entry';
+
+// Thứ tự từ trên xuống dưới theo giao diện website.
+// Các giá trị default chỉ dùng để người quản lý tham khảo; website vẫn giữ
+// default thật trong HTML và chỉ ghi đè khi cột setting tương ứng có dữ liệu.
+const TYPOGRAPHY_ROWS = [
+  [1,  'topbar',             '01. Thanh thông báo',       'Dòng miễn phí vận chuyển / hotline',        13, 13, 'Thông tin nhỏ trên cùng trang'],
+  [2,  'brand_name',          '02. Header thương hiệu',    'Tên “Tovi And Molly”',                      20, 20, 'Brand chính cạnh logo'],
+  [3,  'brand_subtitle',      '02. Header thương hiệu',    'Dòng “Việt Nam”',                           12, 12, 'Brand phụ bên dưới tên'],
+  [4,  'search_input',        '02. Header thương hiệu',    'Chữ trong ô tìm kiếm',                      14, 14, 'Ô tìm kiếm desktop'],
+  [5,  'main_menu',           '03. Menu danh mục',         'Tất cả, Bình sữa, Núm ti, Phụ kiện…',       14, 14, 'Menu ngang ngay dưới header'],
+  [6,  'banner_tag',          '04. Banner',                'Tag nhỏ phía trên banner',                   12, 12, 'Ví dụ: Bộ sưu tập mới'],
+  [7,  'banner_title',        '04. Banner',                'Tiêu đề lớn của banner',                    48, 34, 'Cột title trong campaigns'],
+  [8,  'banner_description',  '04. Banner',                'Mô tả của banner',                           15, 15, 'Cột description trong campaigns'],
+  [9,  'banner_button',       '04. Banner',                'Nút hành động của banner',                   14, 14, 'Cột btn_text trong campaigns'],
+  [10, 'benefit_title',       '05. Quyền lợi mua hàng',    'Giao hàng toàn quốc, Chính hãng…',           14, 14, 'Dòng chính'],
+  [11, 'benefit_description', '05. Quyền lợi mua hàng',    'Miễn phí từ 499K, Cam kết bảo đảm…',         13, 13, 'Dòng mô tả nhỏ'],
+  [12, 'section_title',       '06. Tiêu đề khu vực',       'Danh mục, Sản phẩm',                         30, 24, 'Tiêu đề section'],
+  [13, 'section_link',        '06. Tiêu đề khu vực',       'Xem tất cả',                                 13, 13, 'Liên kết bên phải tiêu đề'],
+  [14, 'category_name',       '07. Danh mục dạng thẻ',     'Tên danh mục trong thẻ',                     14, 14, 'Ví dụ: Bình sữa'],
+  [15, 'category_count',      '07. Danh mục dạng thẻ',     'Số lượng sản phẩm',                          13, 13, 'Con số bên dưới danh mục'],
+  [16, 'filter_button',       '08. Bộ lọc sản phẩm',       'Tất cả, Đang giảm, Mới nhất, Bán chạy',      14, 14, 'Các nút lọc'],
+  [17, 'sort_select',         '08. Bộ lọc sản phẩm',       'Mặc định / Giá tăng dần…',                   14, 14, 'Danh sách sắp xếp'],
+  [18, 'result_count',        '08. Bộ lọc sản phẩm',       'Dòng tổng số sản phẩm',                      13, 13, 'Ví dụ: 35 sản phẩm'],
+  [19, 'product_brand',       '09. Thẻ sản phẩm',          'Tên thương hiệu sản phẩm',                   12, 12, 'Ví dụ: Tovi And Molly'],
+  [20, 'product_name',        '09. Thẻ sản phẩm',          'Tên sản phẩm',                               16, 15, 'Tên chính trong card'],
+  [21, 'product_price',       '09. Thẻ sản phẩm',          'Giá bán hiện tại',                           16, 16, 'Giá nổi bật'],
+  [22, 'product_old_price',   '09. Thẻ sản phẩm',          'Giá gốc gạch ngang',                         14, 14, 'Chỉ hiện khi giảm giá'],
+  [23, 'product_badge',       '09. Thẻ sản phẩm',          'Hot / New / Sale',                           11, 11, 'Nhãn nhỏ trên ảnh'],
+  [24, 'detail_brand',        '10. Chi tiết sản phẩm',     'Thương hiệu trên trang chi tiết',            12, 12, 'Brand phía trên tên sản phẩm'],
+  [25, 'detail_title',        '10. Chi tiết sản phẩm',     'Tên sản phẩm trang chi tiết',                30, 24, 'Tiêu đề lớn'],
+  [26, 'detail_price',        '10. Chi tiết sản phẩm',     'Giá trong trang chi tiết',                   24, 22, 'Giá bán nổi bật'],
+  [27, 'detail_body',         '10. Chi tiết sản phẩm',     'Mô tả, thông số và nhãn lựa chọn',           14, 14, 'Nội dung chi tiết'],
+  [28, 'action_button',       '11. Nút hành động',         'Thêm giỏ, đặt hàng, xác nhận Zalo',          14, 14, 'Nút thao tác chính'],
+  [29, 'cart_text',           '12. Giỏ hàng / đặt hàng',   'Tên sản phẩm, số lượng, tổng tiền, form',    14, 14, 'Nội dung giỏ và form'],
+  [30, 'footer_description',  '13. Chân trang',            'Mô tả thương hiệu ở footer',                 14, 14, 'Đoạn giới thiệu'],
+  [31, 'footer_heading',      '13. Chân trang',            'Sản phẩm, Hỗ trợ, Liên hệ',                  13, 13, 'Tiêu đề các cột'],
+  [32, 'footer_link',         '13. Chân trang',            'Các liên kết footer',                        14, 14, 'Nội dung danh sách'],
+  [33, 'footer_bottom',       '13. Chân trang',            'Copyright / Made with love',                 13, 13, 'Dòng cuối trang'],
+  [34, 'mobile_nav',          '14. Điều hướng mobile',     'Trang chủ, Tìm kiếm, Giỏ hàng, Zalo',        12, 12, 'Thanh cố định dưới điện thoại']
+];
 
 // Header của tab products — phải khớp đúng thứ tự
 const PRODUCT_HEADERS = [
@@ -205,11 +246,121 @@ function setupSheets() {
   getOrCreateSheet(TAB_CATS, ['id','name','icon','image_url','count']);
   const campaignSheet = getOrCreateSheet(TAB_CAMPAIGNS, ['id','type','tag','title','description','btn_text','bg_color','image_url','mobile_image_url','image_position','overlay','active','sort_order']);
   setupCampaignDropdowns(campaignSheet);
+  setupTypographySettings();
 
   // Tab _entry — tạo layout form
   setupEntrySheet();
 
   return logSetupResult('✅ Đã tạo xong cấu trúc sheet!');
+}
+
+// Tạo/cập nhật tab cấu hình chữ mà không xóa các giá trị override đã nhập.
+function setupTypographySettings() {
+  const headers = [
+    'order','key','area','web_content','default_desktop_px','desktop_px',
+    'default_mobile_px','mobile_px','font_weight','font_style','line_height',
+    'letter_spacing_px','color','text_transform','note'
+  ];
+  let sheet = SHEET_CATALOG.getSheetByName(TAB_TYPOGRAPHY);
+  if (!sheet) {
+    sheet = SHEET_CATALOG.insertSheet(TAB_TYPOGRAPHY);
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  }
+
+  const lastRow = sheet.getLastRow();
+  const existing = lastRow > 1
+    ? sheet.getRange(2, 1, lastRow - 1, Math.max(sheet.getLastColumn(), headers.length)).getValues()
+    : [];
+  const rowByKey = {};
+  existing.forEach((row, index) => {
+    const key = String(row[1] || '').trim();
+    if (key) rowByKey[key] = index + 2;
+  });
+
+  TYPOGRAPHY_ROWS.forEach(item => {
+    const [order, key, area, content, desktopDefault, mobileDefault, note] = item;
+    let row = rowByKey[key];
+    if (!row) {
+      row = sheet.getLastRow() + 1;
+      sheet.getRange(row, 1, 1, headers.length).setValues([[
+        order, key, area, content, desktopDefault, '', mobileDefault, '',
+        '', '', '', '', '', '', note
+      ]]);
+    } else {
+      // Chỉ cập nhật cột mô tả/default; giữ nguyên các cột người dùng chỉnh.
+      sheet.getRange(row, 1, 1, 5).setValues([[order, key, area, content, desktopDefault]]);
+      sheet.getRange(row, 7).setValue(mobileDefault);
+      sheet.getRange(row, 15).setValue(note);
+    }
+  });
+
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers])
+    .setFontWeight('bold').setBackground('#111111').setFontColor('#ffffff')
+    .setWrap(true).setVerticalAlignment('middle');
+  sheet.setFrozenRows(1);
+  sheet.setFrozenColumns(4);
+  sheet.setHiddenGridlines(true);
+  const dataRowCount = Math.max(sheet.getLastRow() - 1, 1);
+  sheet.getRange(2, 1, dataRowCount, headers.length).sort({ column: 1, ascending: true });
+
+  // Cột giải thích/default màu xám; cột nhập override màu vàng nhạt.
+  sheet.getRange(2, 1, dataRowCount, headers.length)
+    .setVerticalAlignment('middle').setWrap(true);
+  sheet.getRange(2, 1, dataRowCount, 5).setBackground('#f4f4f4');
+  sheet.getRange(2, 7, dataRowCount, 1).setBackground('#f4f4f4');
+  sheet.getRange(2, 15, dataRowCount, 1).setBackground('#f4f4f4');
+  [6,8,9,10,11,12,13,14].forEach(col =>
+    sheet.getRange(2, col, dataRowCount, 1).setBackground('#fff8d8')
+  );
+
+  const widths = [55,170,190,290,125,105,120,95,105,100,100,130,105,125,260];
+  widths.forEach((width, index) => sheet.setColumnWidth(index + 1, width));
+  sheet.setRowHeight(1, 42);
+  for (let row = 2; row <= dataRowCount + 1; row++) sheet.setRowHeight(row, 44);
+
+  const rowCount = dataRowCount;
+  const listRule = (values, help) => SpreadsheetApp.newDataValidation()
+    .requireValueInList(values, true).setAllowInvalid(false).setHelpText(help).build();
+  sheet.getRange(2, 9, rowCount, 1).setDataValidation(listRule(
+    ['300', '400', '500', '600', '700'],
+    'Độ đậm: 400 = thường, 500 = vừa, 600–700 = đậm. Để trống để dùng mặc định.'
+  ));
+  sheet.getRange(2, 10, rowCount, 1).setDataValidation(listRule(
+    ['normal', 'italic'],
+    'Chọn normal hoặc italic. Để trống để dùng mặc định.'
+  ));
+  sheet.getRange(2, 11, rowCount, 1).setDataValidation(listRule(
+    ['normal', '1', '1.1', '1.2', '1.3', '1.4', '1.5', '1.6', '1.7', '1.8', '2'],
+    'Khoảng cách dòng. Khuyến nghị 1.4–1.6 cho nội dung thường.'
+  ));
+  sheet.getRange(2, 14, rowCount, 1).setDataValidation(listRule(
+    ['none', 'uppercase', 'lowercase', 'capitalize'],
+    'Kiểu chữ hoa/thường. Để trống để dùng mặc định.'
+  ));
+  const sizeRule = SpreadsheetApp.newDataValidation()
+    .requireNumberBetween(8, 96).setAllowInvalid(false)
+    .setHelpText('Chỉ nhập số từ 8 đến 96, đơn vị px. Có thể để trống.').build();
+  sheet.getRange(2, 6, rowCount, 1).setDataValidation(sizeRule);
+  sheet.getRange(2, 8, rowCount, 1).setDataValidation(sizeRule);
+  sheet.getRange(2, 12, rowCount, 1).setDataValidation(
+    SpreadsheetApp.newDataValidation().requireNumberBetween(-2, 10).setAllowInvalid(false)
+      .setHelpText('Khoảng cách ký tự từ -2 đến 10px. Có thể để trống.').build()
+  );
+  // Không dùng custom-formula validation cho cột màu vì dấu phân cách công
+  // thức phụ thuộc locale của Google Sheet (`,` hoặc `;`). Website vẫn kiểm
+  // tra chặt mã HEX trước khi áp dụng, nên giá trị sai sẽ được bỏ qua an toàn.
+  sheet.getRange(2, 13, rowCount, 1).clearDataValidations();
+
+  sheet.getRange('F1').setNote('Cỡ chữ desktop muốn ghi đè, chỉ nhập số px. Để trống = dùng HTML mặc định.');
+  sheet.getRange('H1').setNote('Cỡ chữ mobile muốn ghi đè, chỉ nhập số px. Để trống = dùng HTML mặc định.');
+  sheet.getRange('I1').setNote('Dropdown độ đậm: 400 thường, 500 vừa, 600–700 đậm.');
+  sheet.getRange('J1').setNote('Dropdown chữ thường hoặc chữ nghiêng.');
+  sheet.getRange('K1').setNote('Dropdown chiều cao dòng.');
+  sheet.getRange('L1').setNote('Khoảng cách ký tự theo px, ví dụ 0, 0.5, 1 hoặc 2.');
+  sheet.getRange('M1').setNote('Mã màu HEX 6 ký tự, ví dụ #111111, #666666, #087A37.');
+  sheet.getRange('N1').setNote('Dropdown chuyển chữ hoa/thường.');
+
+  return logSetupResult('✅ Tab typography_settings đã sẵn sàng; dữ liệu override cũ được giữ nguyên.');
 }
 
 // Ghi kết quả vào Execution log để các hàm setup chạy được cả khi project
@@ -696,6 +847,7 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('🐾 Tovi & Molly')
     .addItem('⚙️ Khởi tạo / Reset Sheet', 'setupSheets')
+    .addItem('🎨 Tạo / cập nhật cấu hình chữ', 'setupTypographySettings')
     .addSeparator()
     .addItem('✨ Tạo ID mới (form trống)', 'macroNewId')
     .addItem('🔍 Tìm sản phẩm', 'macroSearch')
