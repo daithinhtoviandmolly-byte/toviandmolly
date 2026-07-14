@@ -16,7 +16,7 @@
       --black: #111;
       --g1: #333;
       --g2: #666;
-      --g3: #999;
+      --g3: #737373;
       --g4: #ccc;
       --g5: #e8e8e8;
       --g6: #f4f4f4;
@@ -41,7 +41,7 @@
       font-family: 'Inter', sans-serif;
       background: var(--white);
       color: var(--black);
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
@@ -138,7 +138,7 @@
     }
 
     .logo-sub {
-      font-size: 9px;
+      font-size: 10px;
       letter-spacing: 2px;
       color: var(--g3);
       text-transform: uppercase;
@@ -156,7 +156,7 @@
       border: 1px solid var(--g5);
       border-radius: 20px;
       background: var(--g6);
-      font-size: 13px;
+      font-size: 14px;
       transition: .2s;
     }
 
@@ -225,6 +225,7 @@
 
     .navwrap {
       border-bottom: 1px solid var(--g5);
+      position: relative;
     }
 
     .navrow {
@@ -242,7 +243,7 @@
 
     .nlink {
       padding: 11px 16px;
-      font-size: 13px;
+      font-size: 14px;
       white-space: nowrap;
       color: var(--g2);
       border-bottom: 2px solid transparent;
@@ -268,7 +269,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      font-size: 13px;
+      font-size: 14px;
       color: var(--g1);
     }
 
@@ -338,7 +339,7 @@
     }
 
     .btag {
-      font-size: 10px;
+      font-size: 12px;
       letter-spacing: 2px;
       text-transform: uppercase;
       color: var(--g2);
@@ -355,7 +356,7 @@
     }
 
     .bdesc {
-      font-size: 14px;
+      font-size: 15px;
       color: var(--g2);
       margin-bottom: 28px;
       max-width: 380px;
@@ -368,7 +369,7 @@
       gap: 8px;
       padding: 11px 26px;
       border: 1px solid var(--black);
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
       border-radius: var(--r);
       transition: .2s;
@@ -477,12 +478,12 @@
     }
 
     .ttxt .t1 {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 500;
     }
 
     .ttxt .t2 {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--g3);
     }
 
@@ -567,12 +568,12 @@
     }
 
     .cname {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 500;
     }
 
     .ccnt {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--g3);
     }
 
@@ -588,7 +589,7 @@
       padding: 6px 14px;
       border-radius: 20px;
       border: 1px solid var(--g5);
-      font-size: 12px;
+      font-size: 13px;
       color: var(--g2);
       cursor: pointer;
       transition: .15s;
@@ -612,7 +613,7 @@
       border: 1px solid var(--g5);
       border-radius: 20px;
       background: var(--white);
-      font-size: 12px;
+      font-size: 13px;
       color: var(--g1);
       cursor: pointer;
     }
@@ -622,7 +623,7 @@
     }
 
     .rcnt {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--g3);
     }
 
@@ -760,7 +761,7 @@
     }
 
     .pbrand {
-      font-size: 10px;
+      font-size: 11px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       color: var(--g3);
@@ -768,7 +769,8 @@
     }
 
     .pname {
-      font-size: 13px;
+      font-size: 15px;
+      font-weight: 500;
       margin: 4px 0 8px;
       line-height: 1.45;
     }
@@ -781,18 +783,18 @@
 
     .psale,
     .pnorm {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
     }
 
     .porig {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--g3);
       text-decoration: line-through;
     }
 
     .ppct {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--red);
       background: #fef0ef;
@@ -1671,7 +1673,7 @@
     }
 
     .fcol h4 {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
@@ -1683,7 +1685,7 @@
     }
 
     .fcol li a {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--g2);
       transition: .15s;
     }
@@ -1699,7 +1701,7 @@
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--g3);
     }
 
@@ -1726,8 +1728,8 @@
       align-items: center;
       gap: 2px;
       padding: 5px 4px;
-      font-size: 10px;
-      color: var(--g3);
+      font-size: 11px;
+      color: var(--g2);
       cursor: pointer;
       transition: .15s;
     }
@@ -1830,8 +1832,33 @@
     }
 
     @media(max-width:768px) {
+      .topbar {
+        padding: 7px 12px;
+        white-space: nowrap;
+      }
+
+      .topbar-sep,
+      .topbar-hotline {
+        display: none;
+      }
+
       .hrow {
         padding: 12px 16px;
+      }
+
+      .navrow {
+        padding: 0 44px 0 8px;
+      }
+
+      .navwrap::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 1px;
+        width: 34px;
+        pointer-events: none;
+        background: linear-gradient(90deg, rgba(255,255,255,0), var(--white));
       }
 
       .sbar {
@@ -1916,8 +1943,7 @@
 
 <body>
 
-  <div class="topbar">Miễn phí vận chuyển đơn từ <strong>499.000₫</strong> &nbsp;·&nbsp; Hotline <strong>0901 234
-      567</strong></div>
+  <div class="topbar">Miễn phí vận chuyển đơn từ <strong>499.000₫</strong><span class="topbar-sep"> &nbsp;·&nbsp; </span><span class="topbar-hotline">Hotline <strong>0901 234 567</strong></span></div>
 
   <header>
     <div class="hrow">
@@ -2258,11 +2284,22 @@
 
     // ── BANNER ────────────────────────────────────────────────
     let bi = 0, bt;
+    function cloudinaryBannerImage(url) {
+      const raw = String(url || '').trim();
+      if (!/^https:\/\//i.test(raw)) return '';
+      const safe = encodeURI(raw).replace(/["'()\\]/g, c => encodeURIComponent(c));
+      if (!safe.includes('/image/upload/')) return safe;
+      const width = window.innerWidth <= 768 ? 960 : window.innerWidth <= 1200 ? 1440 : 1920;
+      const height = Math.round(width * .625);
+      return safe.replace('/image/upload/', `/image/upload/c_limit,w_${width},h_${height},q_auto,f_auto/`);
+    }
     function initBanner() {
       const tr = document.getElementById('btrack'), nav = document.getElementById('bnav');
       tr.innerHTML = S.banners.map(b => {
-        const rawImage = String(b.image_url || '').trim();
-        const image = /^https:\/\//i.test(rawImage) ? encodeURI(rawImage).replace(/["'()\\]/g, c => encodeURIComponent(c)) : '';
+        const preferredImage = window.innerWidth <= 768 && String(b.mobile_image_url || '').trim()
+          ? b.mobile_image_url
+          : b.image_url;
+        const image = cloudinaryBannerImage(preferredImage) || cloudinaryBannerImage(b.image_url);
         const color = /^#[0-9a-f]{3,8}$/i.test(String(b.bg_color || b.background || '')) ? (b.bg_color || b.background) : '#f4f4f4';
         const allowedPositions = ['center', 'left center', 'right center', 'center top', 'center bottom', 'left top', 'left bottom', 'right top', 'right bottom'];
         const position = allowedPositions.includes(String(b.image_position || '').trim().toLowerCase()) ? String(b.image_position).trim().toLowerCase() : 'center';
@@ -2271,7 +2308,9 @@
         const style = image
           ? `background-color:${color};background-image:linear-gradient(rgba(0,0,0,${overlay}),rgba(0,0,0,${overlay})),url(${image});background-position:${position}`
           : `background-color:${color}`;
-        return `<div class="bslide${image ? ' has-image' : ''}" style="${style}"><div><div class="btag">${b.tag || ''}</div><div class="btitle">${(b.title || '').replace(/\\n/g, '<br>').replace(/\n/g, '<br>')}</div><div class="bdesc">${b.description || b.desc || ''}</div><a href="#products" class="bbtn">${b.btn_text || 'Xem ngay →'}</a></div><div class="bdeco">${b.deco || ''}</div></div>`;
+        const buttonText = String(b.btn_text || '').trim();
+        const button = buttonText ? `<a href="#products" class="bbtn">${buttonText}</a>` : '';
+        return `<div class="bslide${image ? ' has-image' : ''}" style="${style}"><div><div class="btag">${b.tag || ''}</div><div class="btitle">${(b.title || '').replace(/\\n/g, '<br>').replace(/\n/g, '<br>')}</div><div class="bdesc">${b.description || b.desc || ''}</div>${button}</div><div class="bdeco">${b.deco || ''}</div></div>`;
       }).join('');
       nav.innerHTML = S.banners.map((_, i) => `<div class="bdot${i === 0 ? ' on' : ''}" onclick="goBan(${i})"></div>`).join('');
       clearInterval(bt); bt = setInterval(() => { bi = (bi + 1) % S.banners.length; upB(); }, 4500);

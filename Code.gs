@@ -203,7 +203,7 @@ function setupSheets() {
   // Tạo tất cả tab cần thiết nếu chưa có
   getOrCreateSheet(TAB_PRODUCTS, PRODUCT_HEADERS);
   getOrCreateSheet(TAB_CATS, ['id','name','icon','image_url','count']);
-  const campaignSheet = getOrCreateSheet(TAB_CAMPAIGNS, ['id','type','tag','title','description','btn_text','bg_color','image_url','image_position','overlay','active','sort_order']);
+  const campaignSheet = getOrCreateSheet(TAB_CAMPAIGNS, ['id','type','tag','title','description','btn_text','bg_color','image_url','mobile_image_url','image_position','overlay','active','sort_order']);
   setupCampaignDropdowns(campaignSheet);
 
   // Tab _entry — tạo layout form
@@ -222,10 +222,10 @@ function logSetupResult(message) {
 // Thêm các cột ảnh banner còn thiếu mà không xóa hoặc thay đổi dữ liệu hiện có.
 // Chạy riêng hàm này một lần nếu Sheet đã được khởi tạo trước đây.
 function setupCampaignImageColumns() {
-  const headers = ['image_url', 'image_position', 'overlay'];
+  const headers = ['image_url', 'mobile_image_url', 'image_position', 'overlay'];
   const sheet = getOrCreateSheet(TAB_CAMPAIGNS, [
     'id','type','tag','title','description','btn_text','bg_color',
-    'image_url','image_position','overlay','active','sort_order'
+    'image_url','mobile_image_url','image_position','overlay','active','sort_order'
   ]);
   const lastColumn = Math.max(sheet.getLastColumn(), 1);
   const current = sheet.getRange(1, 1, 1, lastColumn).getValues()[0].map(String);

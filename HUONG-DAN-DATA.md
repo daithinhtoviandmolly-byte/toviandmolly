@@ -210,10 +210,10 @@ Dòng chạy phía trên banner, dùng để hiển thị khuyến mãi ngắn.
 
 Mỗi dòng là một slide banner.
 
-| id | type | tag | title | description | btn_text | bg_color | image_url | image_position | overlay | active | sort_order |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 2 | banner | Bộ sưu tập mới | Yêu thương bé | Đồ dùng chất lượng cao... | Khám phá → | #f7f4f0 | URL Cloudinary | right center | 0.22 | true | 1 |
-| 3 | banner | Khuyến mãi | Giảm đến 50% | Ưu đãi đặc biệt... | Mua ngay → | #f0f4f7 | | center | 0.22 | true | 2 |
+| id | type | tag | title | description | btn_text | bg_color | image_url | mobile_image_url | image_position | overlay | active | sort_order |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 2 | banner | Bộ sưu tập mới | Yêu thương bé | Đồ dùng chất lượng cao... | Khám phá → | #f7f4f0 | Ảnh desktop | Ảnh mobile | right center | 0.22 | true | 1 |
+| 3 | banner | Khuyến mãi | Giảm đến 50% | Ưu đãi đặc biệt... | Mua ngay → | #f0f4f7 | Ảnh desktop | | center | 0.22 | true | 2 |
 
 - **type**: phải là `banner`
 - **tag**: dòng chữ nhỏ phía trên tiêu đề (vd: "Bộ sưu tập mới")
@@ -221,7 +221,8 @@ Mỗi dòng là một slide banner.
 - **description**: mô tả ngắn phía dưới tiêu đề
 - **btn_text**: chữ trên nút (vd: `Khám phá →`)
 - **bg_color**: màu nền dạng hex (vd: `#f7f4f0`) — nên dùng màu nhạt
-- **image_url**: URL ảnh banner trên Cloudinary; để trống nếu chỉ muốn dùng màu nền
+- **image_url**: URL ảnh banner desktop trên Cloudinary; để trống nếu chỉ muốn dùng màu nền
+- **mobile_image_url**: URL ảnh riêng cho điện thoại; nếu để trống, website tự sử dụng ảnh desktop trong `image_url`
 - **image_position**: chọn vị trí ưu tiên của ảnh từ dropdown; thường dùng `right center`
 - **overlay**: chọn độ tối phủ lên ảnh từ dropdown; khuyến nghị `0.22`, tăng lên nếu chữ khó đọc
 - **active**: `true` để hiện, `false` để ẩn
@@ -251,12 +252,15 @@ Hai cột `image_position` và `overlay` đã có sẵn danh sách lựa chọn;
 ### 4.3 Chuẩn bị ảnh banner
 
 - Kích thước khuyến nghị: **1920×700px**; có thể dùng 1440×560px để nhẹ hơn.
+- Ảnh mobile khuyến nghị: **900×1000px** hoặc **900×1100px**.
 - Tỷ lệ ảnh phù hợp khoảng **2.4:1 đến 3:1**.
 - Ưu tiên WebP/JPEG, dung lượng khoảng 300–600KB và không nên vượt quá 1MB.
 - Nên đặt chủ thể ở bên phải và chừa khoảng 35–40% bên trái cho tiêu đề, mô tả và nút.
+- Không nên chèn sẵn chữ vào file ảnh vì website đã hiển thị tag, tiêu đề, mô tả và nút từ Google Sheet; chữ trong ảnh sẽ bị chồng lên nội dung website.
 - Không đặt nội dung quan trọng sát mép vì ảnh sẽ được hiển thị bằng `cover` và có thể bị cắt khác nhau trên desktop/mobile.
 - Ảnh luôn giữ đúng tỷ lệ, không bị kéo méo. `image_position` quyết định vùng ảnh được ưu tiên khi phần dư bị cắt.
-- Nếu `image_url` để trống, banner tiếp tục sử dụng `bg_color` như trước.
+- Nếu `mobile_image_url` để trống, điện thoại tự sử dụng ảnh desktop trong `image_url`.
+- Nếu cả hai URL ảnh đều trống, banner tiếp tục sử dụng `bg_color` như trước.
 
 **Gợi ý màu nền banner nhẹ:**
 ```
@@ -317,7 +321,7 @@ Sửa sản phẩm:   _entry → menu 🐾 → 🔍 Tìm → chọn → sửa �
 Xóa sản phẩm:   _entry → menu 🐾 → 🔍 Tìm → chọn → 🗑️ Xóa
 Ẩn sản phẩm:    Còn hàng? = false → 💾 Lưu
 Thêm banner:     tab campaigns → thêm dòng mới, type = banner
-Ảnh banner:      dán image_url → chọn image_position → chọn overlay
+Ảnh banner:      dán image_url và mobile_image_url → chọn image_position → chọn overlay
 Thêm danh mục:   tab categories → thêm id, name, icon, image_url
 Xem đơn hàng:   Sheet "Tovi Molly Orders" → chọn tab tháng
 ```
